@@ -1,63 +1,80 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Mar 10 16:40:53 2020
+
+@author: zoakes
+"""
+
+"""
+IBDash: IB Automated Trading Dashboard
+
+Program Version 1.0.1
+By: Zach Oakes
+
+
+Revision Notes:
+1.0.0 (03/05/2020) - Initial Structure Build 
+1.0.1 (03/05/2020) - Refactored
+
+
+"""
+
 import dash
-import dash_core_components as dcc
 import dash_html_components as html
-import plotly.graph_objs as go
-
-########### Define your variables
-beers=['Chesapeake Stout', 'Snake Dog IPA', 'Imperial Porter', 'Double Dog IPA']
-ibu_values=[35, 60, 85, 75]
-abv_values=[5.4, 7.1, 9.2, 4.3]
-color1='lightblue'
-color2='darkgreen'
-mytitle='Beer Comparison'
-tabtitle='beer!'
-myheading='Flying Dog Beers'
-label1='IBU'
-label2='ABV'
-githublink='https://github.com/austinlasseter/flying-dog-beers'
-sourceurl='https://www.flyingdog.com/beers/'
-
-########### Set up the chart
-bitterness = go.Bar(
-    x=beers,
-    y=ibu_values,
-    name=label1,
-    marker={'color':color1}
-)
-alcohol = go.Bar(
-    x=beers,
-    y=abv_values,
-    name=label2,
-    marker={'color':color2}
-)
-
-beer_data = [bitterness, alcohol]
-beer_layout = go.Layout(
-    barmode='group',
-    title = mytitle
-)
-
-beer_fig = go.Figure(data=beer_data, layout=beer_layout)
+import dash_core_components as dcc
+from assets import aggregate, individual
 
 
-########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
-app.title=tabtitle
+#colors = {"background": "#ffffff", "background_div": "black", 'text': '#050099'}
+colors = {
+    'background': '#111111',
+    'text': '#ffffff',
+    'primary':'black',
+}
+app.config['suppress_callback_exceptions']= True
 
-########### Set up the layout
-app.layout = html.Div(children=[
-    html.H1(myheading),
-    dcc.Graph(
-        id='flyingdog',
-        figure=beer_fig
-    ),
-    html.A('Code on Github', href=githublink),
-    html.Br(),
-    html.A('Data Source', href=sourceurl),
-    ]
-)
+###############################################################################  -- TABS
 
+app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
+    html.H1('IBMonitor', style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+    html.H6('An Automated Trade Monitoring Dashboard', style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+    html.H6('Developed by Z.Oakes', style={
+           'textAlign': 'center',
+            'color': colors['text']
+        }),
+
+
+      dcc.Tabs(id="tabs", className="row", style={'backgroundColor':'dimgray',"margin": "2% 3%","height":"20","verticalAlign":"middle"}, value='dem_tab', children=[
+        dcc.Tab(label='Aggregate', value='dem_tab'),
+        dcc.Tab(label='Individual', value='med_tab')
+        # dcc.Tab(label='Re-admissions', value='readmit_tab')
+    ]),
+    html.Div(id='tabs-content')
+])
+    
+#Select Which Tab!! (Maybe make this a Selector -- for Agg, All, or Individual Positions)
+#Would require a loop in dcc.Tabs (for i in self.OPLs:)
+from dash.dependencies import Input, Output
+@app.callback(Output('tabs-content', 'children'),
+              [Input('tabs', 'value')])
+def render_content(tab):
+    if tab == 'dem_tab':
+        return aggregate.tab_1_layout
+    elif tab == 'med_tab':
+        return individual.tab_2_layout
+    
+    
+
+    
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
