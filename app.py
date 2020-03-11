@@ -74,11 +74,7 @@ def render_content(tab):
         return individual.tab_2_layout
     
     
-########### Initiate the app
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-server = app.server
-#app.title=tabtitle
+
     
 if __name__ == '__main__':
     app.run_server()
