@@ -72,7 +72,7 @@ pie.update_layout(title_text='Win %',paper_bgcolor='black')
 ## SUBPLOT -- SR RET VAR 
 
 import pandas as pd
-import pandas_datareader as pdr
+#import pandas_datareader as pdr
 import random
 
 
