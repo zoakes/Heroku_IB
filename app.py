@@ -74,7 +74,7 @@ def render_content(tab):
         return individual.tab_2_layout
     
     
-
+server = app.server
     
 if __name__ == '__main__':
     app.run_server(debug=True)
